@@ -6,9 +6,9 @@ import health from "./routes/health.ts";
 
 const app = new Hono();
 
+app.use("*", errorMiddleware);
 app.use("*", logger);
 app.use("*", cors);
-app.use("*", errorMiddleware);
 
 app.route("/health", health);
 
