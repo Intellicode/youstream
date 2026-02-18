@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    >
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              "roboto": ["Roboto", "Arial", "sans-serif"],
+            },
+            colors: {
+              "yt-bg": "#0f0f0f",
+              "yt-bg-elevated": "#212121",
+              "yt-bg-hover": "#272727",
+              "yt-bg-active": "#3d3d3d",
+              "yt-red": "#ff0000",
+              "yt-red-hover": "#cc0000",
+              "yt-text": "#f1f1f1",
+              "yt-text-secondary": "#aaaaaa",
+              "yt-border": "#303030",
+              "yt-chip": "#272727",
+              "yt-chip-active": "#f1f1f1",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: #717171 transparent;
+      }
+      *::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      *::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      *::-webkit-scrollbar-thumb {
+        background: #717171;
+        border-radius: 4px;
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        scrollbar-width: none;
+      }
+      .video-thumbnail {
+        aspect-ratio: 16/9;
+      }
+      .channel-avatar {
+        min-width: 36px;
+      }
+      .sidebar-item svg {
+        min-width: 24px;
+      }
+    </style>
+  </head>
+  <body class="bg-yt-bg text-yt-text font-roboto min-h-screen">
+    <!-- Header -->
+    <header
+      class="fixed top-0 left-0 right-0 z-50 bg-yt-bg h-14 flex items-center justify-between px-4"
+    >
+      <!-- Left section -->
+      <div class="flex items-center gap-4">
+        <!-- Menu button -->
+        <button class="p-2 hover:bg-yt-bg-hover rounded-full transition-colors">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </button>
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-0.5">
+          <div
+            class="bg-yt-red rounded-lg p-1 flex items-center justify-center"
+          >
+            <svg
+              class="w-5 h-5 text-white"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+          <span class="text-xl font-semibold tracking-tighter ml-1"
+          >VideoHub</span>
+        </a>
+      </div>
+
+      <!-- Center section - Search -->
+      <div class="flex items-center flex-1 max-w-2xl mx-8">
+        <div class="flex flex-1">
+          <div class="flex-1 flex">
+            <input
+              type="text"
+              placeholder="Search"
+              class="w-full bg-yt-bg border border-yt-border rounded-l-full py-2 px-4 pl-5 text-yt-text placeholder-yt-text-secondary focus:outline-none focus:border-blue-500"
+            >
+            <button
+              class="bg-yt-bg-hover hover:bg-yt-bg-active border border-l-0 border-yt-border rounded-r-full px-6 transition-colors"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                />
+              </svg>
+            </button>
+          </div>
+          <button
+            class="ml-3 p-2.5 bg-yt-bg-hover hover:bg-yt-bg-active rounded-full transition-colors"
+            title="Search with your voice"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right section -->
+      <div class="flex items-center gap-2">
+        <button
+          class="p-2 hover:bg-yt-bg-hover rounded-full transition-colors"
+          title="Create"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2zm3-7H3v12h14v-6.39l4 1.83V8.56l-4 1.83V6m1-1v3.83L22 7v8l-4-1.83V19H2V5h16z"
+            />
+          </svg>
+        </button>
+        <button
+          class="p-2 hover:bg-yt-bg-hover rounded-full transition-colors relative"
+          title="Notifications"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"
+            />
+          </svg>
+          <span
+            class="absolute top-1 right-1 bg-yt-red text-white text-[10px] font-medium px-1.5 rounded-full"
+          >9+</span>
+        </button>
+        <button
+          class="ml-2 w-8 h-8 rounded-full overflow-hidden bg-purple-600 flex items-center justify-center text-sm font-medium"
+        >
+          T
+        </button>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside
+      class="fixed left-0 top-14 bottom-0 w-60 bg-yt-bg overflow-y-auto py-3 hide-scrollbar"
+    >
+      <!-- Main navigation -->
+      <nav class="px-3">
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 bg-yt-bg-hover rounded-lg"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M12 4.33l7 6.12V20h-4v-6H9v6H5v-9.55l7-6.12M12 3 4 10v10h6v-6h4v6h6V10l-8-7z"
+            />
+          </svg>
+          <span class="text-sm font-normal">Home</span>
+        </a>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M10 18v-6l5 3-5 3zm7-15H7v1h10V3zm3 3H4v1h16V6zm2 3H2v12h20V9zM3 10h18v10H3V10z"
+            />
+          </svg>
+          <span class="text-sm">Shorts</span>
+        </a>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M10 18v-6l5 3-5 3zm7-15H7v1h10V3zm3 3H4v1h16V6zm2 3H2v12h20V9zM3 10h18v10H3V10z"
+            />
+          </svg>
+          <span class="text-sm">Subscriptions</span>
+        </a>
+      </nav>
+
+      <div class="border-t border-yt-border my-3 mx-3"></div>
+
+      <!-- You section -->
+      <nav class="px-3">
+        <div class="px-3 py-1.5">
+          <span class="text-base font-normal">You</span>
+          <svg
+            class="w-4 h-4 inline ml-1"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="m10 17 5-5-5-5v10z" />
+          </svg>
+        </div>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M11 7v3H8v2h3v3h2v-3h3v-2h-3V7h-2zm1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+            />
+          </svg>
+          <span class="text-sm">Your channel</span>
+        </a>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M14.97 16.95 10 13.87V7h2v5.76l4.03 2.49-1.06 1.7zM12 3c-4.96 0-9 4.04-9 9s4.04 9 9 9 9-4.04 9-9-4.04-9-9-9m0-1c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2z"
+            />
+          </svg>
+          <span class="text-sm">History</span>
+        </a>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M10 8v8l6-4-6-4zm11.99 2.99V21c0 1.1-.9 2-2 2H4.01c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h16c1.09 0 1.99.9 1.99 2v7.99zM20 11V3H4v18h16v-8l-6 4V8l6 3z"
+            />
+          </svg>
+          <span class="text-sm">Your videos</span>
+        </a>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M12 3.67c-4.58 0-8.33 3.75-8.33 8.33s3.75 8.33 8.33 8.33 8.33-3.75 8.33-8.33S16.58 3.67 12 3.67zm3.17 11.42L12 13.75V7.92h1.25v5.02l2.75 1.17-.83 1.98z"
+            />
+          </svg>
+          <span class="text-sm">Watch later</span>
+        </a>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M14.72 11.19 19.5 3H5l6.5 10.7v6.3H11v1h2v-1h-1.5v-6.3l1.72-2.81zm-1.5-.69L8.12 4h7.76l-2.66 6.5z"
+            />
+          </svg>
+          <span class="text-sm">Liked videos</span>
+        </a>
+      </nav>
+
+      <div class="border-t border-yt-border my-3 mx-3"></div>
+
+      <!-- Subscriptions -->
+      <nav class="px-3">
+        <div class="px-3 py-1.5 mb-1">
+          <span class="text-base font-normal">Subscriptions</span>
+        </div>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <img
+            src="https://picsum.photos/seed/ch1/24/24"
+            class="w-6 h-6 rounded-full"
+            alt=""
+          >
+          <span class="text-sm truncate">Tech Explainers</span>
+        </a>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <img
+            src="https://picsum.photos/seed/ch2/24/24"
+            class="w-6 h-6 rounded-full"
+            alt=""
+          >
+          <span class="text-sm truncate">Code with Sarah</span>
+          <span class="w-1.5 h-1.5 bg-blue-500 rounded-full ml-auto"></span>
+        </a>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <img
+            src="https://picsum.photos/seed/ch3/24/24"
+            class="w-6 h-6 rounded-full"
+            alt=""
+          >
+          <span class="text-sm truncate">Gaming Daily</span>
+        </a>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <img
+            src="https://picsum.photos/seed/ch4/24/24"
+            class="w-6 h-6 rounded-full"
+            alt=""
+          >
+          <span class="text-sm truncate">Music Vibes</span>
+          <span class="w-1.5 h-1.5 bg-blue-500 rounded-full ml-auto"></span>
+        </a>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <img
+            src="https://picsum.photos/seed/ch5/24/24"
+            class="w-6 h-6 rounded-full"
+            alt=""
+          >
+          <span class="text-sm truncate">Travel Adventures</span>
+        </a>
+        <button
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors w-full text-left"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="m18 9.28-6.35 6.35-6.37-6.35.72-.71 5.64 5.65 5.65-5.65z"
+            />
+          </svg>
+          <span class="text-sm">Show more</span>
+        </button>
+      </nav>
+
+      <div class="border-t border-yt-border my-3 mx-3"></div>
+
+      <!-- Explore -->
+      <nav class="px-3">
+        <div class="px-3 py-1.5 mb-1">
+          <span class="text-base font-normal">Explore</span>
+        </div>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M19 3.87v9.77C19 17.7 15.86 21 12 21s-7-3.3-7-7.37V3.87l3.5 3.5 3.5-3.5 3.5 3.5 3.5-3.5zM12 18c2.76 0 5-2.24 5-5.13V7.13l-1.5-1.5-2 2-2-2-2 2-2-2-1.5 1.5v5.74C6 15.76 9.24 18 12 18z"
+            />
+          </svg>
+          <span class="text-sm">Trending</span>
+        </a>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M12 4v9.38c-.73-.84-1.8-1.38-3-1.38-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V8h6V4h-7zM9 19c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm9-12h-5V5h5v2z"
+            />
+          </svg>
+          <span class="text-sm">Music</span>
+        </a>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4zm2 14H4V6.47L5.76 10H16l2-4h2v12z"
+            />
+          </svg>
+          <span class="text-sm">Movies</span>
+        </a>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A2.01 2.01 0 0 0 18.06 7h-.12a2 2 0 0 0-1.9 1.37l-1.41 4.24 2.77 2.76 1.3-3.88L20 15v7h2zM12.5 11.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5S11 9.17 11 10s.67 1.5 1.5 1.5zm1.22 1.54L11.5 18v4h-2v-4l-1-3.46c-.07-.23-.07-.36 0-.54l-.65-.65a2.01 2.01 0 0 0 0 2.83L9 17.34V22h5v-4.66l1.22-1.22a2.01 2.01 0 0 0 0-2.83 2.01 2.01 0 0 0-1.5-.25zM4 9c-1.11 0-2 .89-2 2s.89 2 2 2 2-.89 2-2-.89-2-2-2zm1.15 10.25L6.76 17H7.5l1.42-5.29a2 2 0 0 0-1.9-1.37h-.12c-.86 0-1.63.57-1.9 1.37L2.5 17h2.52l.13 2.25z"
+            />
+          </svg>
+          <span class="text-sm">Live</span>
+        </a>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M10 12H8v2H6v-2H4v-2h2V8h2v2h2v2zm7 .5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5.67 1.5 1.5 1.5 1.5-.67 1.5-1.5zm3-3c0-.83-.67-1.5-1.5-1.5S17 8.67 17 9.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5zm-3.24-4.41L21 5v14l-4.24-.09A7.97 7.97 0 0 1 4.08 14H2v-4h2.08a7.97 7.97 0 0 1 12.68-4.91zM5 12c0 2.76 2.24 5 5 5h5.75l3.25.07V6.93L15.75 7H10c-2.76 0-5 2.24-5 5z"
+            />
+          </svg>
+          <span class="text-sm">Gaming</span>
+        </a>
+        <a
+          href="#"
+          class="sidebar-item flex items-center gap-6 px-3 py-2.5 hover:bg-yt-bg-hover rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"
+            />
+          </svg>
+          <span class="text-sm">Sports</span>
+        </a>
+      </nav>
+
+      <div class="border-t border-yt-border my-3 mx-3"></div>
+
+      <!-- Footer links -->
+      <div class="px-6 py-3">
+        <div
+          class="flex flex-wrap gap-x-2 gap-y-0.5 text-xs text-yt-text-secondary mb-3"
+        >
+          <a href="#" class="hover:text-yt-text">About</a>
+          <a href="#" class="hover:text-yt-text">Press</a>
+          <a href="#" class="hover:text-yt-text">Copyright</a>
+          <a href="#" class="hover:text-yt-text">Contact us</a>
+          <a href="#" class="hover:text-yt-text">Creators</a>
+          <a href="#" class="hover:text-yt-text">Advertise</a>
+          <a href="#" class="hover:text-yt-text">Developers</a>
+        </div>
+        <div
+          class="flex flex-wrap gap-x-2 gap-y-0.5 text-xs text-yt-text-secondary mb-3"
+        >
+          <a href="#" class="hover:text-yt-text">Terms</a>
+          <a href="#" class="hover:text-yt-text">Privacy</a>
+          <a href="#" class="hover:text-yt-text">Policy & Safety</a>
+          <a href="#" class="hover:text-yt-text">How VideoHub works</a>
+          <a href="#" class="hover:text-yt-text">Test new features</a>
+        </div>
+        <p class="text-xs text-yt-text-secondary">&copy; 2026 VideoHub LLC</p>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="ml-60 pt-14">
+      <!-- Filter chips -->
+      <div
+        class="sticky top-14 z-40 bg-yt-bg px-6 py-3 border-b border-yt-border"
+      >
+        <div class="flex gap-3 overflow-x-auto hide-scrollbar">
+          <button
+            class="px-3 py-1.5 bg-yt-chip-active text-yt-bg text-sm font-medium rounded-lg whitespace-nowrap"
+          >
+            All
+          </button>
+          <button
+            class="px-3 py-1.5 bg-yt-chip hover:bg-yt-bg-active text-sm rounded-lg whitespace-nowrap transition-colors"
+          >
+            Music
+          </button>
+          <button
+            class="px-3 py-1.5 bg-yt-chip hover:bg-yt-bg-active text-sm rounded-lg whitespace-nowrap transition-colors"
+          >
+            Gaming
+          </button>
+          <button
+            class="px-3 py-1.5 bg-yt-chip hover:bg-yt-bg-active text-sm rounded-lg whitespace-nowrap transition-colors"
+          >
+            Live
+          </button>
+          <button
+            class="px-3 py-1.5 bg-yt-chip hover:bg-yt-bg-active text-sm rounded-lg whitespace-nowrap transition-colors"
+          >
+            News
+          </button>
+          <button
+            class="px-3 py-1.5 bg-yt-chip hover:bg-yt-bg-active text-sm rounded-lg whitespace-nowrap transition-colors"
+          >
+            Podcasts
+          </button>
+          <button
+            class="px-3 py-1.5 bg-yt-chip hover:bg-yt-bg-active text-sm rounded-lg whitespace-nowrap transition-colors"
+          >
+            Coding
+          </button>
+          <button
+            class="px-3 py-1.5 bg-yt-chip hover:bg-yt-bg-active text-sm rounded-lg whitespace-nowrap transition-colors"
+          >
+            Tech reviews
+          </button>
+          <button
+            class="px-3 py-1.5 bg-yt-chip hover:bg-yt-bg-active text-sm rounded-lg whitespace-nowrap transition-colors"
+          >
+            Recently uploaded
+          </button>
+          <button
+            class="px-3 py-1.5 bg-yt-chip hover:bg-yt-bg-active text-sm rounded-lg whitespace-nowrap transition-colors"
+          >
+            Watched
+          </button>
+          <button
+            class="px-3 py-1.5 bg-yt-chip hover:bg-yt-bg-active text-sm rounded-lg whitespace-nowrap transition-colors"
+          >
+            New to you
+          </button>
+        </div>
+      </div>
+
+      <!-- Video grid -->
+      <div
+        class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-8"
+      >
+        <!-- Video card 1 -->
+        <article class="group cursor-pointer">
+          <div
+            class="relative video-thumbnail rounded-xl overflow-hidden bg-yt-bg-elevated mb-3"
+          >
+            <img
+              src="https://picsum.photos/seed/vid1/640/360"
+              alt=""
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            >
+            <span
+              class="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-medium px-1.5 py-0.5 rounded"
+            >12:34</span>
+          </div>
+          <div class="flex gap-3">
+            <a
+              href="#"
+              class="channel-avatar w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
+            >
+              <img
+                src="https://picsum.photos/seed/ava1/36/36"
+                alt=""
+                class="w-full h-full object-cover"
+              >
+            </a>
+            <div class="flex-1 min-w-0">
+              <h3
+                class="text-sm font-medium leading-5 line-clamp-2 mb-1 group-hover:text-yt-text"
+              >
+                Building a Modern Web App with Next.js 15 - Complete Tutorial
+              </h3>
+              <a
+                href="#"
+                class="text-xs text-yt-text-secondary hover:text-yt-text block"
+              >Tech Explainers</a>
+              <p class="text-xs text-yt-text-secondary">
+                1.2M views &bull; 2 days ago
+              </p>
+            </div>
+            <button
+              class="opacity-0 group-hover:opacity-100 p-1 -mr-2 self-start transition-opacity"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"
+                />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- Video card 2 -->
+        <article class="group cursor-pointer">
+          <div
+            class="relative video-thumbnail rounded-xl overflow-hidden bg-yt-bg-elevated mb-3"
+          >
+            <img
+              src="https://picsum.photos/seed/vid2/640/360"
+              alt=""
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            >
+            <span
+              class="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-medium px-1.5 py-0.5 rounded"
+            >45:21</span>
+          </div>
+          <div class="flex gap-3">
+            <a
+              href="#"
+              class="channel-avatar w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
+            >
+              <img
+                src="https://picsum.photos/seed/ava2/36/36"
+                alt=""
+                class="w-full h-full object-cover"
+              >
+            </a>
+            <div class="flex-1 min-w-0">
+              <h3
+                class="text-sm font-medium leading-5 line-clamp-2 mb-1 group-hover:text-yt-text"
+              >
+                Why I Switched From React to Svelte - 6 Months Later
+              </h3>
+              <a
+                href="#"
+                class="text-xs text-yt-text-secondary hover:text-yt-text block"
+              >Code with Sarah</a>
+              <p class="text-xs text-yt-text-secondary">
+                892K views &bull; 1 week ago
+              </p>
+            </div>
+            <button
+              class="opacity-0 group-hover:opacity-100 p-1 -mr-2 self-start transition-opacity"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"
+                />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- Video card 3 -->
+        <article class="group cursor-pointer">
+          <div
+            class="relative video-thumbnail rounded-xl overflow-hidden bg-yt-bg-elevated mb-3"
+          >
+            <img
+              src="https://picsum.photos/seed/vid3/640/360"
+              alt=""
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            >
+            <div
+              class="absolute inset-0 flex items-center justify-center bg-black/50"
+            >
+              <div
+                class="w-12 h-12 bg-yt-red rounded-full flex items-center justify-center"
+              >
+                <svg
+                  class="w-6 h-6 text-white ml-1"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+            </div>
+            <span
+              class="absolute top-2 left-2 bg-yt-red text-white text-xs font-medium px-1.5 py-0.5 rounded uppercase"
+            >Live</span>
+            <span
+              class="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-medium px-1.5 py-0.5 rounded"
+            >2.4K watching</span>
+          </div>
+          <div class="flex gap-3">
+            <a
+              href="#"
+              class="channel-avatar w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
+            >
+              <img
+                src="https://picsum.photos/seed/ava3/36/36"
+                alt=""
+                class="w-full h-full object-cover"
+              >
+            </a>
+            <div class="flex-1 min-w-0">
+              <h3
+                class="text-sm font-medium leading-5 line-clamp-2 mb-1 group-hover:text-yt-text"
+              >
+                Late Night Coding Session - Building AI Tools from Scratch
+              </h3>
+              <a
+                href="#"
+                class="text-xs text-yt-text-secondary hover:text-yt-text block"
+              >DevStream</a>
+              <p class="text-xs text-yt-text-secondary">2.4K watching now</p>
+            </div>
+            <button
+              class="opacity-0 group-hover:opacity-100 p-1 -mr-2 self-start transition-opacity"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"
+                />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- Video card 4 -->
+        <article class="group cursor-pointer">
+          <div
+            class="relative video-thumbnail rounded-xl overflow-hidden bg-yt-bg-elevated mb-3"
+          >
+            <img
+              src="https://picsum.photos/seed/vid4/640/360"
+              alt=""
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            >
+            <span
+              class="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-medium px-1.5 py-0.5 rounded"
+            >8:47</span>
+          </div>
+          <div class="flex gap-3">
+            <a
+              href="#"
+              class="channel-avatar w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
+            >
+              <img
+                src="https://picsum.photos/seed/ava4/36/36"
+                alt=""
+                class="w-full h-full object-cover"
+              >
+            </a>
+            <div class="flex-1 min-w-0">
+              <h3
+                class="text-sm font-medium leading-5 line-clamp-2 mb-1 group-hover:text-yt-text"
+              >
+                Stop Using These CSS Properties in 2026!
+              </h3>
+              <a
+                href="#"
+                class="text-xs text-yt-text-secondary hover:text-yt-text block"
+              >CSS Tricks</a>
+              <p class="text-xs text-yt-text-secondary">
+                567K views &bull; 3 days ago
+              </p>
+            </div>
+            <button
+              class="opacity-0 group-hover:opacity-100 p-1 -mr-2 self-start transition-opacity"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"
+                />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- Video card 5 -->
+        <article class="group cursor-pointer">
+          <div
+            class="relative video-thumbnail rounded-xl overflow-hidden bg-yt-bg-elevated mb-3"
+          >
+            <img
+              src="https://picsum.photos/seed/vid5/640/360"
+              alt=""
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            >
+            <span
+              class="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-medium px-1.5 py-0.5 rounded"
+            >1:23:45</span>
+          </div>
+          <div class="flex gap-3">
+            <a
+              href="#"
+              class="channel-avatar w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
+            >
+              <img
+                src="https://picsum.photos/seed/ava5/36/36"
+                alt=""
+                class="w-full h-full object-cover"
+              >
+            </a>
+            <div class="flex-1 min-w-0">
+              <h3
+                class="text-sm font-medium leading-5 line-clamp-2 mb-1 group-hover:text-yt-text"
+              >
+                Full Stack TypeScript Course - Node, React, PostgreSQL & Docker
+              </h3>
+              <a
+                href="#"
+                class="text-xs text-yt-text-secondary hover:text-yt-text block"
+              >freeCodeCamp</a>
+              <p class="text-xs text-yt-text-secondary">
+                2.8M views &bull; 2 months ago
+              </p>
+            </div>
+            <button
+              class="opacity-0 group-hover:opacity-100 p-1 -mr-2 self-start transition-opacity"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"
+                />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- Video card 6 -->
+        <article class="group cursor-pointer">
+          <div
+            class="relative video-thumbnail rounded-xl overflow-hidden bg-yt-bg-elevated mb-3"
+          >
+            <img
+              src="https://picsum.photos/seed/vid6/640/360"
+              alt=""
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            >
+            <span
+              class="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-medium px-1.5 py-0.5 rounded"
+            >21:08</span>
+          </div>
+          <div class="flex gap-3">
+            <a
+              href="#"
+              class="channel-avatar w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
+            >
+              <img
+                src="https://picsum.photos/seed/ava6/36/36"
+                alt=""
+                class="w-full h-full object-cover"
+              >
+            </a>
+            <div class="flex-1 min-w-0">
+              <h3
+                class="text-sm font-medium leading-5 line-clamp-2 mb-1 group-hover:text-yt-text"
+              >
+                I Built a $10M SaaS in 6 Months - Here's How
+              </h3>
+              <a
+                href="#"
+                class="text-xs text-yt-text-secondary hover:text-yt-text block"
+              >Startup Stories</a>
+              <p class="text-xs text-yt-text-secondary">
+                4.1M views &bull; 5 days ago
+              </p>
+            </div>
+            <button
+              class="opacity-0 group-hover:opacity-100 p-1 -mr-2 self-start transition-opacity"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"
+                />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- Video card 7 -->
+        <article class="group cursor-pointer">
+          <div
+            class="relative video-thumbnail rounded-xl overflow-hidden bg-yt-bg-elevated mb-3"
+          >
+            <img
+              src="https://picsum.photos/seed/vid7/640/360"
+              alt=""
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            >
+            <span
+              class="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-medium px-1.5 py-0.5 rounded"
+            >15:32</span>
+          </div>
+          <div class="flex gap-3">
+            <a
+              href="#"
+              class="channel-avatar w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
+            >
+              <img
+                src="https://picsum.photos/seed/ava7/36/36"
+                alt=""
+                class="w-full h-full object-cover"
+              >
+            </a>
+            <div class="flex-1 min-w-0">
+              <h3
+                class="text-sm font-medium leading-5 line-clamp-2 mb-1 group-hover:text-yt-text"
+              >
+                The Dark Side of AI Code Generation - What No One Talks About
+              </h3>
+              <a
+                href="#"
+                class="text-xs text-yt-text-secondary hover:text-yt-text block"
+              >The Primeagen</a>
+              <p class="text-xs text-yt-text-secondary">
+                723K views &bull; 12 hours ago
+              </p>
+            </div>
+            <button
+              class="opacity-0 group-hover:opacity-100 p-1 -mr-2 self-start transition-opacity"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"
+                />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- Video card 8 -->
+        <article class="group cursor-pointer">
+          <div
+            class="relative video-thumbnail rounded-xl overflow-hidden bg-yt-bg-elevated mb-3"
+          >
+            <img
+              src="https://picsum.photos/seed/vid8/640/360"
+              alt=""
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            >
+            <span
+              class="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-medium px-1.5 py-0.5 rounded"
+            >32:17</span>
+          </div>
+          <div class="flex gap-3">
+            <a
+              href="#"
+              class="channel-avatar w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
+            >
+              <img
+                src="https://picsum.photos/seed/ava8/36/36"
+                alt=""
+                class="w-full h-full object-cover"
+              >
+            </a>
+            <div class="flex-1 min-w-0">
+              <h3
+                class="text-sm font-medium leading-5 line-clamp-2 mb-1 group-hover:text-yt-text"
+              >
+                Lo-Fi Beats to Code/Relax To - 24/7 Stream
+              </h3>
+              <a
+                href="#"
+                class="text-xs text-yt-text-secondary hover:text-yt-text block"
+              >Coding Cafe</a>
+              <p class="text-xs text-yt-text-secondary">
+                12M views &bull; Streamed 2 years ago
+              </p>
+            </div>
+            <button
+              class="opacity-0 group-hover:opacity-100 p-1 -mr-2 self-start transition-opacity"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"
+                />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- Video card 9 -->
+        <article class="group cursor-pointer">
+          <div
+            class="relative video-thumbnail rounded-xl overflow-hidden bg-yt-bg-elevated mb-3"
+          >
+            <img
+              src="https://picsum.photos/seed/vid9/640/360"
+              alt=""
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            >
+            <span
+              class="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-medium px-1.5 py-0.5 rounded"
+            >18:45</span>
+          </div>
+          <div class="flex gap-3">
+            <a
+              href="#"
+              class="channel-avatar w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
+            >
+              <img
+                src="https://picsum.photos/seed/ava9/36/36"
+                alt=""
+                class="w-full h-full object-cover"
+              >
+            </a>
+            <div class="flex-1 min-w-0">
+              <h3
+                class="text-sm font-medium leading-5 line-clamp-2 mb-1 group-hover:text-yt-text"
+              >
+                Rust vs Go in 2026 - Which Should You Learn First?
+              </h3>
+              <a
+                href="#"
+                class="text-xs text-yt-text-secondary hover:text-yt-text block"
+              >No Boilerplate</a>
+              <p class="text-xs text-yt-text-secondary">
+                1.5M views &bull; 1 month ago
+              </p>
+            </div>
+            <button
+              class="opacity-0 group-hover:opacity-100 p-1 -mr-2 self-start transition-opacity"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"
+                />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- Video card 10 -->
+        <article class="group cursor-pointer">
+          <div
+            class="relative video-thumbnail rounded-xl overflow-hidden bg-yt-bg-elevated mb-3"
+          >
+            <img
+              src="https://picsum.photos/seed/vid10/640/360"
+              alt=""
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            >
+            <span
+              class="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-medium px-1.5 py-0.5 rounded"
+            >10:23</span>
+          </div>
+          <div class="flex gap-3">
+            <a
+              href="#"
+              class="channel-avatar w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
+            >
+              <img
+                src="https://picsum.photos/seed/ava10/36/36"
+                alt=""
+                class="w-full h-full object-cover"
+              >
+            </a>
+            <div class="flex-1 min-w-0">
+              <h3
+                class="text-sm font-medium leading-5 line-clamp-2 mb-1 group-hover:text-yt-text"
+              >
+                My Perfect Developer Setup for 2026
+              </h3>
+              <a
+                href="#"
+                class="text-xs text-yt-text-secondary hover:text-yt-text block"
+              >NetworkChuck</a>
+              <p class="text-xs text-yt-text-secondary">
+                2.1M views &bull; 4 days ago
+              </p>
+            </div>
+            <button
+              class="opacity-0 group-hover:opacity-100 p-1 -mr-2 self-start transition-opacity"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"
+                />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- Video card 11 -->
+        <article class="group cursor-pointer">
+          <div
+            class="relative video-thumbnail rounded-xl overflow-hidden bg-yt-bg-elevated mb-3"
+          >
+            <img
+              src="https://picsum.photos/seed/vid11/640/360"
+              alt=""
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            >
+            <span
+              class="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-medium px-1.5 py-0.5 rounded"
+            >25:18</span>
+          </div>
+          <div class="flex gap-3">
+            <a
+              href="#"
+              class="channel-avatar w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
+            >
+              <img
+                src="https://picsum.photos/seed/ava11/36/36"
+                alt=""
+                class="w-full h-full object-cover"
+              >
+            </a>
+            <div class="flex-1 min-w-0">
+              <h3
+                class="text-sm font-medium leading-5 line-clamp-2 mb-1 group-hover:text-yt-text"
+              >
+                How I Automated My Entire Home with Home Assistant
+              </h3>
+              <a
+                href="#"
+                class="text-xs text-yt-text-secondary hover:text-yt-text block"
+              >Jeff Geerling</a>
+              <p class="text-xs text-yt-text-secondary">
+                890K views &bull; 1 week ago
+              </p>
+            </div>
+            <button
+              class="opacity-0 group-hover:opacity-100 p-1 -mr-2 self-start transition-opacity"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"
+                />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- Video card 12 -->
+        <article class="group cursor-pointer">
+          <div
+            class="relative video-thumbnail rounded-xl overflow-hidden bg-yt-bg-elevated mb-3"
+          >
+            <img
+              src="https://picsum.photos/seed/vid12/640/360"
+              alt=""
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            >
+            <span
+              class="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-medium px-1.5 py-0.5 rounded"
+            >42:56</span>
+          </div>
+          <div class="flex gap-3">
+            <a
+              href="#"
+              class="channel-avatar w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
+            >
+              <img
+                src="https://picsum.photos/seed/ava12/36/36"
+                alt=""
+                class="w-full h-full object-cover"
+              >
+            </a>
+            <div class="flex-1 min-w-0">
+              <h3
+                class="text-sm font-medium leading-5 line-clamp-2 mb-1 group-hover:text-yt-text"
+              >
+                Complete Guide to System Design Interviews
+              </h3>
+              <a
+                href="#"
+                class="text-xs text-yt-text-secondary hover:text-yt-text block"
+              >NeetCode</a>
+              <p class="text-xs text-yt-text-secondary">
+                3.2M views &bull; 3 months ago
+              </p>
+            </div>
+            <button
+              class="opacity-0 group-hover:opacity-100 p-1 -mr-2 self-start transition-opacity"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"
+                />
+              </svg>
+            </button>
+          </div>
+        </article>
+      </div>
+    </main>
+  </body>
+</html>
